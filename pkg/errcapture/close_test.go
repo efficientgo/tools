@@ -1,3 +1,6 @@
+// Copyright (c) The EfficientGo Authors.
+// Licensed under the Apache License 2.0.
+
 // Initially copied from Thanos
 //
 // Copyright (c) The Thanos Authors.
@@ -53,7 +56,7 @@ func TestClose(t *testing.T) {
 	} {
 		if ok := t.Run("", func(t *testing.T) {
 			ret := tcase.err
-			Close(&ret, tcase.closer, "close")
+			Close(&ret, tcase.closer.Close, "close")
 
 			if tcase.expectedErrStr == "" {
 				if ret != nil {
@@ -117,10 +120,10 @@ func TestCloseMoreThanOnce(t *testing.T) {
 	lc := &loggerCapturer{}
 	r := newEmulatedCloser(strings.NewReader("somestring"))
 
-	CloseWithLog(lc, r, "should not be called")
-	CloseWithLog(lc, r, "should not be called")
+	CloseWithLog(lc, r.Close, "should not be called")
+	CloseWithLog(lc, r.Close, "should not be called")
 	testutil.Equals(t, false, lc.WasCalled)
 
-	CloseWithLog(lc, r, "should be called")
+	CloseWithLog(lc, r.Close, "should be called")
 	testutil.Equals(t, true, lc.WasCalled)
 }

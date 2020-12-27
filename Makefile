@@ -38,6 +38,10 @@ help: ## Displays help.
 .PHONY: all
 all: format build
 
+.PHONY: build
+build:
+	go test -run=nope $(shell go list ./... | grep -v /vendor/);
+
 .PHONY: deps
 deps: ## Ensures fresh go.mod and go.sum.
 	@go mod tidy
@@ -46,7 +50,7 @@ deps: ## Ensures fresh go.mod and go.sum.
 .PHONY: docs
 docs: $(MDOX) ## Generates config snippets and doc formatting.
 	@echo ">> generating docs $(PATH)"
-	@$(MDOX) mdox fmt -l *.md
+	@$(MDOX) fmt -l *.md
 
 .PHONY: format
 format: ## Formats Go code.

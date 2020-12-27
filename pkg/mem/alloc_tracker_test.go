@@ -85,6 +85,7 @@ func testWithAllocationsAndNonDerministicPrint_WithToleranceTracking(tracker Tra
 }
 
 func TestResourceTracker_MemoryBytesAllocated(t *testing.T) {
+	t.Skip("unreliable on CI, to fix.")
 	for i := 0; i < 2; i++ {
 		// Use fprint to ensure compiler does not optimize those allocs away.
 		fmt.Fprint(ioutil.Discard, x1, x2, x3)

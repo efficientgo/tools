@@ -1,3 +1,6 @@
+// Copyright (c) The EfficientGo Authors.
+// Licensed under the Apache License 2.0.
+
 // Initially copied from Thanos
 //
 // Copyright (c) The Thanos Authors.
@@ -42,9 +45,11 @@ type Logger interface {
 	Log(keyvals ...interface{}) error
 }
 
+type closerFunc func() error
+
 // CloseWithLog is making sure we log every error, even those from best effort tiny closers.
-func CloseWithLog(logger Logger, closer io.Closer, format string, a ...interface{}) {
-	err := closer.Close()
+func CloseWithLog(logger Logger, closer closerFunc, format string, a ...interface{}) {
+	err := closer()
 	if err == nil {
 		return
 	}
@@ -64,20 +69,20 @@ func ExhaustCloseWithLog(logger Logger, r io.ReadCloser, format string, a ...int
 		_ = logger.Log("msg", "failed to exhaust reader, performance may be impeded", "err", err)
 	}
 
-	CloseWithLog(logger, r, format, a...)
+	CloseWithLog(logger, r.Close, format, a...)
 }
 
 // Close runs function and on error return error by argument including the given error (usually
 // from caller function).
-func Close(err *error, closer io.Closer, format string, a ...interface{}) {
-	*err = merrors.New(*err, errors.Wrapf(closer.Close(), format, a...)).Err()
+func Close(err *error, closer closerFunc, format string, a ...interface{}) {
+	*err = merrors.New(*err, errors.Wrapf(closer(), format, a...)).Err()
 }
 
 // ExhaustClose closes the io.ReadCloser with error capture but exhausts the reader before.
 func ExhaustClose(err *error, r io.ReadCloser, format string, a ...interface{}) {
 	_, copyErr := io.Copy(ioutil.Discard, r)
 
-	Close(err, r, format, a...)
+	Close(err, r.Close, format, a...)
 
 	// Prepend the io.Copy error.
 	*err = merrors.New(copyErr, *err).Err()
