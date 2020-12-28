@@ -1,5 +1,6 @@
 include .bingo/Variables.mk
-FILES_TO_FMT      ?= $(shell find . -path ./vendor -prune -o -name '*.go' -print)
+
+MODULES ?= $(shell find $(PWD) -name "go.mod" | grep -v ".bingo" | xargs dirname)
 
 GO111MODULE       ?= on
 export GO111MODULE
@@ -17,14 +18,14 @@ define require_clean_work_tree
 	@git update-index -q --ignore-submodules --refresh
 
     @if ! git diff-files --quiet --ignore-submodules --; then \
-        echo >&2 "cannot $1: you have unstaged changes."; \
+        echo >&2 "$1: you have unstaged changes."; \
         git diff-files --name-status -r --ignore-submodules -- >&2; \
         echo >&2 "Please commit or stash them."; \
         exit 1; \
     fi
 
     @if ! git diff-index --cached --quiet HEAD --ignore-submodules --; then \
-        echo >&2 "cannot $1: your index contains uncommitted changes."; \
+        echo >&2 "$1: your index contains uncommitted changes."; \
         git diff-index --cached --name-status -r --ignore-submodules HEAD -- >&2; \
         echo >&2 "Please commit or stash them."; \
         exit 1; \
@@ -39,13 +40,21 @@ help: ## Displays help.
 all: format build
 
 .PHONY: build
-build:
-	go test -run=nope $(shell go list ./... | grep -v /vendor/);
+build: ## Build all modules
+	@echo ">> building all modules: $(MODULES)"
+	for dir in $(MODULES) ; do \
+  		echo ">> building in $${dir}"; \
+		cd $${dir} && go test -run=nope ./...; \
+	done
+	@echo ">> building copyright"
+	@cd copyright && go build -o $(GOBIN)/copyright .
 
 .PHONY: deps
-deps: ## Ensures fresh go.mod and go.sum.
-	@go mod tidy
-	@go mod verify
+deps: ## Cleans up deps for all modules
+	@echo ">> running deps tidy for all modules: $(MODULES)"
+	for dir in $(MODULES) ; do \
+		cd $${dir} && go mod tidy; \
+	done
 
 .PHONY: docs
 docs: $(MDOX) ## Generates config snippets and doc formatting.
@@ -55,16 +64,15 @@ docs: $(MDOX) ## Generates config snippets and doc formatting.
 .PHONY: format
 format: ## Formats Go code.
 format: $(GOIMPORTS)
-	@echo ">> formatting code"
-	@$(GOIMPORTS) -w $(FILES_TO_FMT)
+	@echo ">> formatting  all modules Go code: $(MODULES)"
+	@$(GOIMPORTS) -w $(MODULES)
 
 .PHONY: test
 test: ## Runs all Go unit tests.
-export GOCACHE=/tmp/cache
-test:
-	@echo ">> running unit tests (without cache)"
-	@rm -rf $(GOCACHE)
-	@go test -v -timeout=30m $(shell go list ./... | grep -v /vendor/);
+	@echo ">> running tests for all modules: $(MODULES)"
+	for dir in $(MODULES) ; do \
+		cd $${dir} && go test -v -race ./...; \
+	done
 
 .PHONY: check-git
 check-git:
@@ -81,16 +89,21 @@ endif
 # to debug big allocations during linting.
 lint: ## Runs various static analysis against our code.
 lint: $(FAILLINT) $(GOLANGCI_LINT) $(MISSPELL) build format docs check-git deps
-	$(call require_clean_work_tree,"detected not clean master before running lint")
-	@echo ">> verifying modules being imported"
-	#TODO(bwplotka): Uncomment once we upstream merrors package: @$(FAILLINT) -paths "errors=github.com/pkg/errors" ./...
-	@$(FAILLINT) -paths "fmt.{Print,PrintfPrintln,Sprint}" -ignore-tests ./...
+	$(call require_clean_work_tree,"detected not clean master before running lint - run make lint and commit changes.")
+	@echo ">> verifying imported "
+	for dir in $(MODULES) ; do \
+		cd $${dir} && $(FAILLINT) -paths "fmt.{Print,PrintfPrintln,Sprint}" -ignore-tests ./...; \
+	done
 	@echo ">> examining all of the Go files"
-	@go vet -stdmethods=false ./...
+	for dir in $(MODULES) ; do \
+		cd $${dir} && go vet -stdmethods=false ./...; \
+	done
 	@echo ">> linting all of the Go files GOGC=${GOGC}"
-	@$(GOLANGCI_LINT) run
+	for dir in $(MODULES) ; do \
+		cd $${dir} && $(GOLANGCI_LINT) run; \
+	done
 	@echo ">> detecting misspells"
 	@find . -type f | grep -v vendor/ | grep -vE '\./\..*' | xargs $(MISSPELL) -error
 	@echo ">> ensuring Copyright headers"
-	@go run ./scripts/copyright/...
-	$(call require_clean_work_tree,"detected files without copyright; run make lint file and commit changes.")
+	@$(GOBIN)/copyright $(shell go list -f "{{.Dir}}" ./... | xargs -i find "{}" -name "*.go")
+	$(call require_clean_work_tree,"detected files without copyright - run make lint and commit changes.")
