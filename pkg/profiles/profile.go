@@ -1,3 +1,6 @@
+// Copyright (c) The EfficientGo Authors.
+// Licensed under the Apache License 2.0.
+
 package profiles
 
 import (
@@ -12,53 +15,62 @@ import (
 )
 
 func Heap(dir string) (err error) {
-	f, err := os.Open(filepath.Join(dir, "mem.pprof"))
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return err
+	}
+
+	f, err := os.Create(filepath.Join(dir, "mem.pprof"))
 	if err != nil {
 		return err
 	}
-	defer errcapture.Close(&err, f, "close")
+	defer errcapture.Close(&err, f.Close, "close")
 	return pprof.WriteHeapProfile(f)
 }
 
-type CPUProfileType string
+type CPUType string
 
 const (
-	CPUProfileTypeBuiltIn CPUProfileType = "built-in"
+	CPUTypeBuiltIn CPUType = "built-in"
 	// CPUProfileTypeFGProf represents enhanced https://github.com/felixge/fgprof profiling.
-	CPUProfileTypeFGProf CPUProfileType = "fgprof"
+	CPUTypeFGProf CPUType = "fgprof"
 )
 
 // StartCPU starts CPU profiling. If no error, it returns close function that stops and flushes profile to provided
 // directory.
-func StartCPU(dir string, typ CPUProfileType) (closeFn func() error, err error) {
+// NOTE(bwplotka): It does not make sense to run more than one of those.
+func StartCPU(dir string, typ CPUType) (closeFn func() error, err error) {
 	fileName := "cpu.pprof"
 	switch typ {
-	case CPUProfileTypeBuiltIn:
-	case CPUProfileTypeFGProf:
+	case CPUTypeBuiltIn:
+	case CPUTypeFGProf:
 		fileName = "cpu.fgprof.pprof"
 	default:
 		return nil, errors.Errorf("unknown CPU profile type %v", typ)
-
 	}
-	f, err := os.Open(filepath.Join(dir, fileName))
+
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return nil, err
+	}
+
+	f, err := os.Create(filepath.Join(dir, fileName))
 	if err != nil {
 		return nil, err
 	}
 
 	switch typ {
-	case CPUProfileTypeBuiltIn:
+	case CPUTypeBuiltIn:
 		if err = pprof.StartCPUProfile(f); err != nil {
-			errcapture.Close(&err, f, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
+			errcapture.Close(&err, f.Close, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
 			return nil, err
 		}
 		closeFn = func() (ferr error) {
 			pprof.StopCPUProfile()
 			return errors.Wrapf(f.Close(), "close %v", filepath.Join(dir, fileName))
 		}
-	case CPUProfileTypeFGProf:
+	case CPUTypeFGProf:
 		closeFGProfFn := fgprof.Start(f, fgprof.FormatPprof)
 		closeFn = func() (ferr error) {
-			defer errcapture.Close(&ferr, f, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
+			defer errcapture.Close(&ferr, f.Close, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
 			return closeFGProfFn()
 		}
 	}
