@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/efficientgo/tools/core/pkg/errcapture"
-	"github.com/efficientgo/tools/kingpin/pkg/extflag"
 	"github.com/pkg/errors"
+	"github.com/protoconfig/protoconfig/go/kingpinv2"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -125,7 +125,7 @@ func (c *copyrightApplier) Apply(file string) (err error) {
 
 func main() {
 	app := kingpin.New(filepath.Base(os.Args[0]), `copyright`)
-	copyright := extflag.Flag(app, "copyright", "Copyright content to apply to provided files").DefaultPath("./COPYRIGHT").PathOrContent()
+	copyright := kingpinv2.Flag(app, "copyright", "Copyright content to apply to provided files").DefaultPath("./COPYRIGHT").PathOrContent()
 	files := app.Arg("files", "Files to apply copyright to.").ExistingFiles()
 	if _, err := app.Parse(os.Args[1:]); err != nil {
 		log.Fatal(err)

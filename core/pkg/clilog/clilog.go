@@ -1,15 +1,6 @@
 // Copyright (c) The EfficientGo Authors.
 // Licensed under the Apache License 2.0.
 
-// Package clilog is a github.com/go-kit/kit/log logger implementation suitable for CLI tools.
-// Main goal is to log in human readable ways e.g:
-//
-// * No special sign escaping.
-// * No key printing.
-// * Values separated with ': '
-// * Support for pretty printing multi errors (including nested ones) in format of (<something>: <err1>; <err2>; ...; <errN>)
-// * TODO(bwplotka): Support for multiple multilines.
-// This implementation allows CLI to use github.com/go-kit/kit/log enabled libraries in CLI friendly way.
 package clilog
 
 import (
@@ -254,7 +245,7 @@ func writeValue(w io.Writer, value interface{}) error {
 			}
 			return writeValue(w, rvalue.Elem().Interface())
 		}
-		return writeStringValue(w, fmt.Sprint(v), true)
+		return writeStringValue(w, fmt.Sprintf("%v", v), true) //nolint
 	}
 }
 
