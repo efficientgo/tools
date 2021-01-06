@@ -20,7 +20,7 @@ This module contains:
 
 * `pkg/clilog`:
 
-```bash mdox-gen-exec="sh -c 'tail -n +6 core/pkg/clilog/doc.go'"
+```go mdox-gen-exec="sh -c 'tail -n +6 core/pkg/clilog/doc.go'"
 // Logging formatter that transforms structure log entry into human readable, clean friendly entry
 // suitable more for CLI tools.
 //
@@ -37,7 +37,7 @@ This module contains:
 
 * `pkg/errcapture`
 
-```bash mdox-gen-exec="sh -c 'tail -n +6 core/pkg/errcapture/doc.go'"
+```go mdox-gen-exec="sh -c 'tail -n +6 core/pkg/errcapture/doc.go'"
 // Close a `Closer` interface safely while capturing error. It's often forgotten but it's a caller responsibility
 // to close all implementations of `Closer`, such as *os.File or io.ReaderCloser. Commonly we would use:
 //
@@ -65,7 +65,7 @@ This module contains:
 
 * `pkg/logerrcapture`
 
-```bash mdox-gen-exec="sh -c 'tail -n +6 core/pkg/logerrcapture/doc.go'"
+```go mdox-gen-exec="sh -c 'tail -n +6 core/pkg/logerrcapture/doc.go'"
 // Close a `Closer` interface safely while logging error. It's often forgotten but it's a caller responsibility
 // to close all implementations of `Closer`, such as *os.File or io.ReaderCloser. Commonly we would use:
 //
@@ -94,7 +94,7 @@ This module contains:
 
 * `pkg/merrors`
 
-```bash mdox-gen-exec="sh -c 'tail -n +6 core/pkg/merrors/doc.go'"
+```go mdox-gen-exec="sh -c 'tail -n +6 core/pkg/merrors/doc.go'"
 // Safe multi error implementation that chains errors on the same level. Supports errors.As and errors.Is functions.
 //
 // Example 1:
@@ -114,7 +114,7 @@ This module contains:
 
 * `pkg/runutil`
 
-```bash mdox-gen-exec="sh -c 'tail -n +6 core/pkg/runutil/doc.go'"
+```go mdox-gen-exec="sh -c 'tail -n +6 core/pkg/runutil/doc.go'"
 // Helpers for advanced function scheduling control like repeat or retry.
 //
 // It's very often the case when you need to excutes some code every fixed intervals or have it retried automatically.
@@ -142,7 +142,7 @@ This module contains:
 
 * `pkg/testutil`
 
-```bash mdox-gen-exec="sh -c 'tail -n +6 core/pkg/testutil/doc.go'"
+```go mdox-gen-exec="sh -c 'tail -n +6 core/pkg/testutil/doc.go'"
 // Simplistic assertion helpers for testing code. TestOrBench utils for union of testing and benchmarks.
 ```
 
