@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"runtime/pprof"
 
-	"github.com/efficientgo/tools/pkg/errcapture"
+	"github.com/efficientgo/tools/core/pkg/errcapture"
 	"github.com/felixge/fgprof"
 	"github.com/pkg/errors"
 )

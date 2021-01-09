@@ -7,7 +7,7 @@ import (
 	stderrors "errors"
 	"testing"
 
-	"github.com/efficientgo/tools/pkg/merrors"
+	"github.com/efficientgo/tools/core/pkg/merrors"
 	pkgerrors "github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 )

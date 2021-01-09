@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/efficientgo/tools/pkg/testutil"
+	"github.com/efficientgo/tools/core/pkg/testutil"
 	"github.com/pkg/errors"
 )
 

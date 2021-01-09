@@ -14,7 +14,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/efficientgo/tools/pkg/runutil"
+	"github.com/efficientgo/tools/core/pkg/runutil"
 	"github.com/pkg/errors"
 )
 
