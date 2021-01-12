@@ -156,13 +156,15 @@ usage: copyright [<flags>] [<files>...]
 copyright
 
 Flags:
-  --help                        Show context-sensitive help (also try
-                                --help-long and --help-man).
-  --copyright-file=<file-path>  Path to Copyright content to apply to provided
-                                files
-  --copyright=<content>         Alternative to 'copyright-file' flag (lower
-                                priority). Content of Copyright content to apply
-                                to provided files
+      --help                 Show context-sensitive help (also try --help-long
+                             and --help-man).
+      --copyright-file=<file-path>  
+                             Path to Copyright content to apply to provided
+                             files
+      --copyright=<content>  Alternative to 'copyright-file' flag (lower
+                             priority). Content of Copyright content to apply to
+                             provided files
+  -v, --verbose              Enable verbose prints.
 
 Args:
   [<files>]  Files to apply copyright to.
