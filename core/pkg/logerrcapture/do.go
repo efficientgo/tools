@@ -22,21 +22,22 @@ type Logger interface {
 	Log(keyvals ...interface{}) error
 }
 
-type closerFunc func() error
+type doFunc func() error
 
-// CloseWithLog is making sure we log every error, even those from best effort tiny closers.
-func Close(logger Logger, closer closerFunc, format string, a ...interface{}) {
-	err := closer()
-	if err == nil {
+// Do is making sure we log every error, even those from best effort tiny functions.
+func Do(logger Logger, doer doFunc, format string, a ...interface{}) {
+	derr := doer()
+	if derr == nil {
 		return
 	}
 
-	// Not a problem if it has been closed already.
-	if errors.Is(err, os.ErrClosed) {
+	// For os closers, it's a common case to double close. From reliability purpose this is not a problem it may only indicate
+	// surprising execution path.
+	if errors.Is(derr, os.ErrClosed) {
 		return
 	}
 
-	_ = logger.Log("msg", "detected close error", "err", errors.Wrap(err, fmt.Sprintf(format, a...)))
+	_ = logger.Log("msg", "detected do error", "err", errors.Wrap(derr, fmt.Sprintf(format, a...)))
 }
 
 // ExhaustClose closes the io.ReadCloser with a log message on error but exhausts the reader before.
@@ -46,5 +47,5 @@ func ExhaustClose(logger Logger, r io.ReadCloser, format string, a ...interface{
 		_ = logger.Log("msg", "failed to exhaust reader, performance may be impeded", "err", err)
 	}
 
-	Close(logger, r.Close, format, a...)
+	Do(logger, r.Close, format, a...)
 }

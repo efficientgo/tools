@@ -57,10 +57,10 @@ func TestCloseMoreThanOnce(t *testing.T) {
 	lc := &loggerCapturer{}
 	r := newEmulatedCloser(strings.NewReader("somestring"))
 
-	Close(lc, r.Close, "should not be called")
-	Close(lc, r.Close, "should not be called")
+	Do(lc, r.Close, "should not be called")
+	Do(lc, r.Close, "should not be called")
 	testutil.Equals(t, false, lc.WasCalled)
 
-	Close(lc, r.Close, "should be called")
+	Do(lc, r.Close, "should be called")
 	testutil.Equals(t, true, lc.WasCalled)
 }

@@ -3,8 +3,9 @@
 
 package errcapture
 
-// Close a `Closer` interface safely while capturing error. It's often forgotten but it's a caller responsibility
-// to close all implementations of `Closer`, such as *os.File or io.ReaderCloser. Commonly we would use:
+// Close a `io.Closer` interface or execute any function that returns error safely while capturing error.
+// It's often forgotten but it's a caller responsibility to close all implementations of `Closer`,
+// such as *os.File or io.ReaderCloser. Commonly we would use:
 //
 // 	defer closer.Close()
 //
@@ -14,12 +15,12 @@ package errcapture
 //
 // 	func <...>(...) (err error) {
 //  	...
-//  	defer errcapture.Close(&err, closer, "log format message")
+//  	defer errcapture.Do(&err, closer.Close, "log format message")
 //
 // 		...
 // 	}
 //
-//If closer returns error, `errcapture.Close` will capture it, add to input error if not nil and return by argument.
+// If Close returns error, `errcapture.Do` will capture it, add to input error if not nil and return by argument.
 //
 // The errcapture.ExhaustClose function provide the same functionality but takes an io.ReadCloser and exhausts the whole
 // reader before closing. This is useful when trying to use http keep-alive connections because for the same connection

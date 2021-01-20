@@ -23,7 +23,7 @@ func (c testCloser) Close() error {
 	return c.err
 }
 
-func TestClose(t *testing.T) {
+func TestDo(t *testing.T) {
 	for _, tcase := range []struct {
 		err    error
 		closer io.Closer
@@ -53,7 +53,7 @@ func TestClose(t *testing.T) {
 	} {
 		if ok := t.Run("", func(t *testing.T) {
 			ret := tcase.err
-			Close(&ret, tcase.closer.Close, "close")
+			Do(&ret, tcase.closer.Close, "close")
 
 			if tcase.expectedErrStr == "" {
 				if ret != nil {
