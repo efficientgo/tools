@@ -2,7 +2,7 @@
 
 [![golang docs](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/efficientgo/tools)
 
-Set of tools, packages and libraries that every open-source Go project always needs with almost no dependencies.
+Set of lightweight tools, packages and modules that every open-source Go project always needs with almost no dependencies.
 
 ## Release model
 
@@ -10,7 +10,7 @@ Since this is meant to be critical, tiny import, multi module toolset, there are
 
 ## Modules
 
-### `github.com/efficientgo/tools/core`
+### Module `github.com/efficientgo/tools/core`
 
 The main module containing set of useful, core packages for testing, closing, running and repeating.
 
@@ -148,7 +148,25 @@ This module contains:
 // Simplistic assertion helpers for testing code. TestOrBench utils for union of testing and benchmarks.
 ```
 
-### `github.com/efficientgo/tools/copyright`
+### Module `github.com/efficientgo/tools/e2e`
+
+This module is a fully featured e2e suite allowing utilizing `go test` for setting hermetic up complex microservice testing scenarios using docker.
+
+```go mdox-gen-exec="sh -c 'tail -n +6 e2e/doc.go'"
+// This module is a fully featured e2e suite allowing utilizing `go test` for setting hermetic up complex microservice integration testing scenarios using docker.
+// Example usages:
+//  * https://github.com/cortexproject/cortex/tree/master/integration
+//  * https://github.com/thanos-io/thanos/tree/master/test/e2e
+//
+// Check github.com/efficientgo/tools/e2e/db for common DBs services you can run out of the box.
+```
+
+Credits:
+
+* [Cortex Team](https://github.com/cortexproject/cortex/tree/f639b1855c9f0c9564113709a6bce2996d151ec7/integration)
+* Initial Author: [@pracucci](https://github.com/pracucci)
+
+### Module `github.com/efficientgo/tools/copyright`
 
 This module is a very simple CLI for ensuring copyright header on code files.
 
