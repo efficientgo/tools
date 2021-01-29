@@ -1,3 +1,6 @@
+// Copyright (c) The EfficientGo Authors.
+// Licensed under the Apache License 2.0.
+
 package e2e
 
 import (
@@ -391,7 +394,7 @@ type ReadinessProbe interface {
 	Ready(service *ConcreteService) (err error)
 }
 
-// HTTPReadinessProbe checks readiness by making HTTP call and checking for expected HTTP status code
+// HTTPReadinessProbe checks readiness by making HTTP call and checking for expected HTTP status code.
 type HTTPReadinessProbe struct {
 	port                     int
 	path                     string
@@ -466,7 +469,7 @@ func (p *TCPReadinessProbe) Ready(service *ConcreteService) (err error) {
 	return conn.Close()
 }
 
-// CmdReadinessProbe checks readiness by `Exec`ing a command (within container) which returns 0 to consider status being ready
+// CmdReadinessProbe checks readiness by `Exec`ing a command (within container) which returns 0 to consider status being ready.
 type CmdReadinessProbe struct {
 	cmd *Command
 }
@@ -525,7 +528,7 @@ func NewHTTPService(
 }
 
 func (s *HTTPService) Metrics() (_ string, err error) {
-	// Map the container port to the local port
+	// Map the container port to the local port.
 	localPort := s.networkPortsContainerToLocal[s.httpPort]
 
 	// Fetch metrics.

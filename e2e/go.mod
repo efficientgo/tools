@@ -3,7 +3,7 @@ module github.com/efficientgo/tools/e2e
 go 1.15
 
 require (
-	github.com/efficientgo/tools/core v0.0.0-20210129204550-29f654ba5ec3
+	github.com/efficientgo/tools/core v0.0.0-20210129205121-421d0828c9a6
 	github.com/go-kit/kit v0.10.0
 	github.com/minio/minio-go/v7 v7.0.7
 	github.com/pkg/errors v0.9.1

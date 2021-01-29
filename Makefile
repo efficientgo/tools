@@ -92,7 +92,7 @@ lint: $(FAILLINT) $(GOLANGCI_LINT) $(MISSPELL) build format docs check-git deps
 	$(call require_clean_work_tree,"detected not clean master before running lint - run make lint and commit changes.")
 	@echo ">> verifying imported "
 	for dir in $(MODULES) ; do \
-		cd $${dir} && $(FAILLINT) -paths "fmt.{Print,PrintfPrintln,Sprint}" -ignore-tests ./...; && \
+		cd $${dir} && $(FAILLINT) -paths "fmt.{Print,PrintfPrintln,Sprint}" -ignore-tests ./... && \
 		$(FAILLINT) -paths "github.com/stretchr/testify=github.com/efficientgo/tools/core/pkg/testutil" ./...; \
 	done
 	@echo ">> examining all of the Go files"

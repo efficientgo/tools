@@ -1,3 +1,6 @@
+// Copyright (c) The EfficientGo Authors.
+// Licensed under the Apache License 2.0.
+
 package e2e
 
 import (
@@ -42,7 +45,7 @@ func (l *logger) Log(keyvals ...interface{}) error {
 	b.WriteString(time.Now().Format("15:04:05"))
 
 	for _, v := range keyvals {
-		b.WriteString(" " + fmt.Sprint(v))
+		b.WriteString(" " + fmt.Sprintf("%v", v))
 	}
 
 	b.WriteString("\n")
@@ -260,6 +263,7 @@ func existDockerNetwork(logger log.Logger, networkName string) (bool, error) {
 	if err != nil {
 		logger.Log(string(out))
 		logger.Log("Unable to check if docker network", networkName, "exists:", err.Error())
+		return false, err
 	}
 
 	return strings.TrimSpace(string(out)) != "", nil
@@ -273,7 +277,7 @@ func getTempDirectory() (string, error) {
 		dir string
 		err error
 	)
-	// If a temp dir is referenced, return that
+	// If a temp dir is referenced, return that.
 	if os.Getenv("E2E_TEMP_DIR") != "" {
 		dir = os.Getenv("E2E_TEMP_DIR")
 	} else {
