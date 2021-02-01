@@ -6,7 +6,9 @@ Set of tools, packages and libraries that every open-source Go project always ne
 
 ## Release model
 
-Since this is meant to be critical, tiny import, multi module toolset, there are currently no semver releases planned. It's designed to pin modules via git commits, all commits to master should be stable and properly tests, vetted and linted.
+Since this is meant to be critical, tiny import, multi module toolset, there are currently no semver releases planned. It's designed to pin modules via git commits, all commits to master should be stable and properly tested, vetted and linted.
+
+API is considered stable, but rare API changes might occur. If they do - they will cause compilation error, so it will be easy to spot.
 
 ## Modules
 
