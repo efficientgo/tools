@@ -4,10 +4,6 @@
 
 Set of tools, packages and libraries that every open-source Go project always needs with almost no dependencies.
 
-## Release model
-
-Since this is meant to be critical, tiny import, multi module toolset, there are currently no semver releases planned. It's designed to pin modules via git commits, all commits to master should be stable and properly tests, vetted and linted.
-
 ## Modules
 
 ### `github.com/efficientgo/tools/core`
