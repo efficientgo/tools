@@ -1,8 +1,6 @@
 # tools
 
-[![copyright module docs](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/efficientgo/tools/copyright)
-[![core module docs](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/efficientgo/tools/core)
-[![e2e module docs](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/efficientgo/tools/e2e)
+[![copyright module docs](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/efficientgo/tools/copyright) [![core module docs](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/efficientgo/tools/core) [![e2e module docs](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/efficientgo/tools/e2e)
 
 Set of lightweight tools, packages and modules that every open-source Go project always needs with almost no dependencies.
 
@@ -206,4 +204,26 @@ or via [bingo](https://github.com/bwplotka/bingo) if want to pin it:
 ```shell
 go install github.com/bwplotka/bingo
 bingo get -u github.com/efficientgo/tools/copyright
+```
+
+### Module `github.com/efficientgo/tools/extkingpin`
+
+This module provides the PathOrContent flag type which defines two flags to fetch bytes. Either from file (\*-file flag) or content (\* flag). Also returns the content of a YAML file with substituted environment variables.
+
+```go mdox-gen-exec="sh -c 'tail -n +6 extkingpin/doc.go'"
+// PathOrContent is a flag type that defines two flags to fetch bytes. Either from file (*-file flag) or content (* flag).
+// Also returns content of YAML file with substituted environment variables.
+// Follows K8s convention, i.e $(...), as mentioned here https://kubernetes.io/docs/tasks/inject-data-application/define-interdependent-environment-variables/.
+
+// RegisterPathOrContent registers PathOrContent flag in kingpinCmdClause.
+
+// Content returns the content of the file when given or directly the content that has been passed to the flag.
+// It returns an error when:
+// * The file and content flags are both not empty.
+// * The file flag is not empty but the file can't be read.
+// * The content is empty and the flag has been defined as required.
+
+// Option is a functional option type for PathOrContent objects.
+// WithRequired allows you to override default required option.
+// WithEnvSubstitution allows you to override default envSubstitution option.
 ```
