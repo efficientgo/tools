@@ -152,21 +152,7 @@ This module contains:
 
 ### Module `github.com/efficientgo/tools/e2e`
 
-This module is a fully featured e2e suite allowing utilizing `go test` for setting hermetic up complex microservice testing scenarios using docker.
-
-```go mdox-gen-exec="sh -c 'tail -n +6 e2e/doc.go'"
-// This module is a fully featured e2e suite allowing utilizing `go test` for setting hermetic up complex microservice integration testing scenarios using docker.
-// Example usages:
-//  * https://github.com/cortexproject/cortex/tree/master/integration
-//  * https://github.com/thanos-io/thanos/tree/master/test/e2e
-//
-// Check github.com/efficientgo/tools/e2e/db for common DBs services you can run out of the box.
-```
-
-Credits:
-
-* [Cortex Team](https://github.com/cortexproject/cortex/tree/f639b1855c9f0c9564113709a6bce2996d151ec7/integration)
-* Initial Author: [@pracucci](https://github.com/pracucci)
+This module is no longer available. It was moved to dedicated repo https://github.com/efficientgo/e2e.
 
 ### Module `github.com/efficientgo/tools/copyright`
 
