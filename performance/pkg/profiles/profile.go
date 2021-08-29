@@ -23,7 +23,7 @@ func Heap(dir string) (err error) {
 	if err != nil {
 		return err
 	}
-	defer errcapture.Close(&err, f.Close, "close")
+	defer errcapture.Do(&err, f.Close, "close")
 	return pprof.WriteHeapProfile(f)
 }
 
@@ -31,7 +31,7 @@ type CPUType string
 
 const (
 	CPUTypeBuiltIn CPUType = "built-in"
-	// CPUProfileTypeFGProf represents enhanced https://github.com/felixge/fgprof profiling.
+	// CPUTypeFGProf represents enhanced https://github.com/felixge/fgprof CPU profiling.
 	CPUTypeFGProf CPUType = "fgprof"
 )
 
@@ -60,7 +60,7 @@ func StartCPU(dir string, typ CPUType) (closeFn func() error, err error) {
 	switch typ {
 	case CPUTypeBuiltIn:
 		if err = pprof.StartCPUProfile(f); err != nil {
-			errcapture.Close(&err, f.Close, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
+			errcapture.Do(&err, f.Close, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
 			return nil, err
 		}
 		closeFn = func() (ferr error) {
@@ -70,7 +70,7 @@ func StartCPU(dir string, typ CPUType) (closeFn func() error, err error) {
 	case CPUTypeFGProf:
 		closeFGProfFn := fgprof.Start(f, fgprof.FormatPprof)
 		closeFn = func() (ferr error) {
-			defer errcapture.Close(&ferr, f.Close, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
+			defer errcapture.Do(&ferr, f.Close, fmt.Sprintf("close %v", filepath.Join(dir, fileName)))
 			return closeFGProfFn()
 		}
 	}
