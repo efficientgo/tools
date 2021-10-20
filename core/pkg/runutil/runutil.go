@@ -9,6 +9,7 @@ package runutil
 
 import (
 	"io"
+	"os"
 	"time"
 
 	"github.com/pkg/errors"
@@ -62,6 +63,23 @@ func RetryWithLog(logger Logger, interval time.Duration, stopc <-chan struct{}, 
 			return err
 		case <-tick.C:
 		}
+	}
+}
+
+// CloseWithLogOnErr is making sure we log every error, even those from best effort tiny closers.
+func CloseWithLogOnErr(logger Logger, closer io.Closer, format string, a ...interface{}) {
+	err := closer.Close()
+	if err == nil {
+		return
+	}
+
+	// Not a problem if it has been closed already.
+	if errors.Is(err, os.ErrClosed) {
+		return
+	}
+
+	if logger == nil {
+		logger.Log("msg", "detected close error", "err", errors.Wrapf(err, format, a...))
 	}
 }
 
