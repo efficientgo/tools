@@ -13,7 +13,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/efficientgo/tools/core/pkg/errutil"
+	"github.com/efficientgo/tools/core/pkg/merrors"
 )
 
 // Repeat executes f every interval seconds until stopc is closed or f returns an error.
@@ -68,7 +68,7 @@ func RetryWithLog(logger Logger, interval time.Duration, stopc <-chan struct{}, 
 // CloseWithErrCapture runs function and on error return error by argument including the given error (usually
 // from caller function).
 func CloseWithErrCapture(err *error, closer io.Closer, format string, a ...interface{}) {
-	merr := errutil.MultiError{}
+	merr := merrors.New()
 
 	merr.Add(*err)
 	merr.Add(errors.Wrapf(closer.Close(), format, a...))
