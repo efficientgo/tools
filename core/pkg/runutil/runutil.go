@@ -8,7 +8,12 @@
 package runutil
 
 import (
+	"io"
 	"time"
+
+	"github.com/pkg/errors"
+
+	"github.com/efficientgo/tools/core/pkg/errutil"
 )
 
 // Repeat executes f every interval seconds until stopc is closed or f returns an error.
@@ -58,4 +63,15 @@ func RetryWithLog(logger Logger, interval time.Duration, stopc <-chan struct{}, 
 		case <-tick.C:
 		}
 	}
+}
+
+// CloseWithErrCapture runs function and on error return error by argument including the given error (usually
+// from caller function).
+func CloseWithErrCapture(err *error, closer io.Closer, format string, a ...interface{}) {
+	merr := errutil.MultiError{}
+
+	merr.Add(*err)
+	merr.Add(errors.Wrapf(closer.Close(), format, a...))
+
+	*err = merr.Err()
 }
