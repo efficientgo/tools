@@ -9,6 +9,7 @@ package runutil
 
 import (
 	"io"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -81,6 +82,16 @@ func CloseWithLogOnErr(logger Logger, closer io.Closer, format string, a ...inte
 	if logger == nil {
 		logger.Log("msg", "detected close error", "err", errors.Wrapf(err, format, a...))
 	}
+}
+
+// ExhaustCloseWithLogOnErr closes the io.ReadCloser with a log message on error but exhausts the reader before.
+func ExhaustCloseWithLogOnErr(logger Logger, r io.ReadCloser, format string, a ...interface{}) {
+	_, err := io.Copy(ioutil.Discard, r)
+	if err != nil {
+		logger.Log("msg", "failed to exhaust reader, performance may be impeded", "err", err)
+	}
+
+	CloseWithLogOnErr(logger, r, format, a...)
 }
 
 // CloseWithErrCapture runs function and on error return error by argument including the given error (usually
