@@ -23,6 +23,7 @@ type PathOrContent struct {
 
 	envSubstitution bool
 	required        bool
+	hidden          bool
 
 	path    *string
 	content *string
@@ -38,24 +39,25 @@ type FlagClause interface {
 // RegisterPathOrContent registers PathOrContent flag in kingpinCmdClause.
 func RegisterPathOrContent(cmd FlagClause, flagName string, help string, opts ...Option) *PathOrContent {
 	fileFlagName := fmt.Sprintf("%s-file", flagName)
-	contentFlagName := flagName
-
-	fileHelp := fmt.Sprintf("Path to %s", help)
-	fileFlag := cmd.Flag(fileFlagName, fileHelp).PlaceHolder("<file-path>").String()
-
-	contentHelp := fmt.Sprintf("Alternative to '%s' flag (mutually exclusive). Content of %s", fileFlagName, help)
-	contentFlag := cmd.Flag(contentFlagName, contentHelp).PlaceHolder("<content>").String()
+	fileFlag := cmd.Flag(fileFlagName, fmt.Sprintf("Path to %s", help)).PlaceHolder("<file-path>")
+	contentFlag := cmd.Flag(flagName, fmt.Sprintf("Alternative to '%s' flag (mutually exclusive). Content of %s", fileFlagName, help)).PlaceHolder("<content>")
 
 	p := &PathOrContent{
-		flagName:        flagName,
-		path:            fileFlag,
-		content:         contentFlag,
-		required:        false,
-		envSubstitution: false,
+		flagName: flagName,
 	}
+
 	for _, opt := range opts {
 		opt(p)
 	}
+
+	if p.hidden {
+		p.path = fileFlag.Hidden().String()
+		p.content = contentFlag.Hidden().String()
+		return p
+	}
+
+	p.path = fileFlag.String()
+	p.content = contentFlag.String()
 	return p
 }
 
@@ -106,6 +108,13 @@ func WithRequired() Option {
 func WithEnvSubstitution() Option {
 	return func(p *PathOrContent) {
 		p.envSubstitution = true
+	}
+}
+
+// WithHidden allows you to override default hidden option and keep the flags hiddem.
+func WithHidden() Option {
+	return func(p *PathOrContent) {
+		p.hidden = true
 	}
 }
 
