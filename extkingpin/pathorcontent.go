@@ -51,9 +51,8 @@ func RegisterPathOrContent(cmd FlagClause, flagName string, help string, opts ..
 	}
 
 	if p.hidden {
-		p.path = fileFlag.Hidden().String()
-		p.content = contentFlag.Hidden().String()
-		return p
+		fileFlag = fileFlag.Hidden()
+		contentFlag = contentFlag.Hidden()
 	}
 
 	p.path = fileFlag.String()
