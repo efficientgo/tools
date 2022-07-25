@@ -111,7 +111,7 @@ func WithEnvSubstitution() Option {
 	}
 }
 
-// WithHidden allows you to override default hidden option and keep the flags hiddem.
+// WithHidden allows you to override the default option and keeps the flag hidden.
 func WithHidden() Option {
 	return func(p *PathOrContent) {
 		p.hidden = true
