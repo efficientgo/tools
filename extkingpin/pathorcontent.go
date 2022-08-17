@@ -73,7 +73,7 @@ func (p *PathOrContent) Content() ([]byte, error) {
 	}
 
 	var content []byte
-	if *p.path != "" {
+	if len(*p.path) > 0 {
 		c, err := ioutil.ReadFile(*p.path)
 		if err != nil {
 			return nil, errors.Wrapf(err, "loading file %s for %s", *p.path, fileFlagName)
