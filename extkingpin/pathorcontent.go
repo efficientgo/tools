@@ -68,19 +68,21 @@ func RegisterPathOrContent(cmd FlagClause, flagName string, help string, opts ..
 func (p *PathOrContent) Content() ([]byte, error) {
 	fileFlagName := fmt.Sprintf("%s-file", p.flagName)
 
-	if len(*p.path) > 0 && len(*p.content) > 0 {
+	path := p.Path()
+	internalContent := p.internalContent()
+	if path != "" && internalContent != "" {
 		return nil, errors.Errorf("both %s and %s flags set.", fileFlagName, p.flagName)
 	}
 
 	var content []byte
-	if len(*p.path) > 0 {
+	if path != "" {
 		c, err := ioutil.ReadFile(*p.path)
 		if err != nil {
 			return nil, errors.Wrapf(err, "loading file %s for %s", *p.path, fileFlagName)
 		}
 		content = c
 	} else {
-		content = []byte(*p.content)
+		content = []byte(internalContent)
 	}
 
 	if len(content) == 0 && p.required {
@@ -94,6 +96,21 @@ func (p *PathOrContent) Content() ([]byte, error) {
 		content = replace
 	}
 	return content, nil
+}
+
+// Path returns the file path is it's defined. Otherwise returns an empty string.
+func (p *PathOrContent) Path() string {
+	if p.path != nil {
+		return *p.path
+	}
+	return ""
+}
+
+func (p *PathOrContent) internalContent() string {
+	if p.content != nil {
+		return *p.content
+	}
+	return ""
 }
 
 // WithRequired allows you to override default required option.
