@@ -96,7 +96,7 @@ func (p *PathOrContent) Content() ([]byte, error) {
 	return content, nil
 }
 
-// Path returns the file path is it's defined. Otherwise returns an empty string.
+// Path returns the file's path.
 func (p *PathOrContent) Path() string {
 	return *p.path
 }
