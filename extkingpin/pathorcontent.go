@@ -96,6 +96,11 @@ func (p *PathOrContent) Content() ([]byte, error) {
 	return content, nil
 }
 
+// Path returns the file's path.
+func (p *PathOrContent) Path() string {
+	return *p.path
+}
+
 // WithRequired allows you to override default required option.
 func WithRequired() Option {
 	return func(p *PathOrContent) {
