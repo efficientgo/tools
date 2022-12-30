@@ -29,6 +29,9 @@ type PathOrContent struct {
 	content *string
 }
 
+// PathOrContent has to implement the pathOrContent interface.
+var _ pathOrContent = (*PathOrContent)(nil)
+
 // Option is a functional option type for PathOrContent objects.
 type Option func(*PathOrContent)
 
