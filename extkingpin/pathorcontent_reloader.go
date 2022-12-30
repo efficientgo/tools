@@ -3,7 +3,7 @@ package extkingpin
 import (
 	"context"
 	"fmt"
-	"os"
+	"io/ioutil"
 	"path"
 	"path/filepath"
 	"time"
@@ -114,7 +114,8 @@ func (t *StaticPathContent) Path() string {
 
 // NewStaticPathContent creates a new content that can be used to serve a static configuration.
 func NewStaticPathContent(fromPath string) (*StaticPathContent, error) {
-	content, err := os.ReadFile(fromPath)
+	content, err := ioutil.ReadFile(fromPath)
+
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not load test content: %s", fromPath)
 	}
@@ -126,5 +127,5 @@ func NewStaticPathContent(fromPath string) (*StaticPathContent, error) {
 func (t *StaticPathContent) Rewrite(newContent []byte) error {
 	t.content = newContent
 	// Write the file to ensure possible file watcher reloaders get triggered.
-	return os.WriteFile(t.path, newContent, 0666)
+	return ioutil.WriteFile(t.path, newContent, 0666)
 }

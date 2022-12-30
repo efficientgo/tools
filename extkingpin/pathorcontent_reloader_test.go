@@ -3,6 +3,7 @@ package extkingpin
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 	"sync"
@@ -78,7 +79,7 @@ func TestPathContentReloader(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			testFile := path.Join(t.TempDir(), "test")
-			testutil.Ok(t, os.WriteFile(testFile, []byte("test"), 0666))
+			testutil.Ok(t, ioutil.WriteFile(testFile, []byte("test"), 0666))
 			pathContent, err := NewStaticPathContent(testFile)
 			testutil.Ok(t, err)
 
