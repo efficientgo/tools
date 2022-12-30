@@ -38,7 +38,7 @@ func PathContentReloader(ctx context.Context, fileContent pathOrContent, debugLo
 
 	watcher, err := fsnotify.NewWatcher()
 	if filePath == "" {
-		debugLogger.Log("msg", "no path detected for config reload")
+		_ = debugLogger.Log("msg", "no path detected for config reload")
 	}
 	if err != nil {
 		return errors.Wrap(err, "creating file watcher")
@@ -48,7 +48,7 @@ func PathContentReloader(ctx context.Context, fileContent pathOrContent, debugLo
 		if debounceTime != 0 {
 			reloadTimer = time.AfterFunc(debounceTime, func() {
 				reloadFunc()
-				debugLogger.Log("msg", "configuration reloaded after debouncing")
+				_ = debugLogger.Log("msg", "configuration reloaded after debouncing")
 			})
 		}
 		defer watcher.Close()
@@ -76,12 +76,12 @@ func PathContentReloader(ctx context.Context, fileContent pathOrContent, debugLo
 				if !event.Op.Has(fsnotify.Write) || !event.Op.Has(fsnotify.Create) {
 					break
 				}
-				debugLogger.Log("msg", fmt.Sprintf("change detected for %s", filePath), "eventName", event.Name, "eventOp", event.Op)
+				_ = debugLogger.Log("msg", fmt.Sprintf("change detected for %s", filePath), "eventName", event.Name, "eventOp", event.Op)
 				if reloadTimer != nil {
 					reloadTimer.Reset(debounceTime)
 				}
 			case err := <-watcher.Errors:
-				errorLogger.Log("msg", "watcher error", "error", err)
+				_ = errorLogger.Log("msg", "watcher error", "error", err)
 			}
 		}
 	}()
