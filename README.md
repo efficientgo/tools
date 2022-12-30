@@ -4,7 +4,7 @@
 
 Set of lightweight tools, packages and modules that every open-source Go project always needs with almost no dependencies.
 
-## NOTE: core module from this repository is now deprecated and move to standalone repo with higher compatibiltiy guarantees: https://github.com/efficientgo/core
+## NOTE: core module from this repository is now deprecated and move to standalone repo with higher compatibility guarantees: https://github.com/efficientgo/core
 
 ## Release model
 
