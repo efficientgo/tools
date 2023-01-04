@@ -7,6 +7,11 @@ package extkingpin
 // Also returns content of YAML file with substituted environment variables.
 // Follows K8s convention, i.e $(...), as mentioned here https://kubernetes.io/docs/tasks/inject-data-application/define-interdependent-environment-variables/.
 
+// PathContentReloader is a helper that runs a given function every time a PathOrContent is changed.
+// It is specially useful when paired with RegisterPathOrContent to reload configuration dynamically.
+// It works based on a file-system watcher and has a debounce mechanism to avoid excessive reloads.
+// You are still responsible to decide what to do with the new file inside the reload function.
+
 // RegisterPathOrContent registers PathOrContent flag in kingpinCmdClause.
 
 // Content returns the content of the file when given or directly the content that has been passed to the flag.

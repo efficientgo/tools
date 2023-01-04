@@ -4,7 +4,8 @@
 
 Set of lightweight tools, packages and modules that every open-source Go project always needs with almost no dependencies.
 
-## NOTE: core module from this repository is now deprecated and move to standalone repo with higher compatibiltiy guarantees: https://github.com/efficientgo/core
+## NOTE: core module from this repository is now deprecated and move to standalone repo with higher compatibility guarantees: https://github.com/efficientgo/core
+
 ## Release model
 
 Since this is meant to be critical, tiny import, multi module toolset, there are currently no semver releases planned. It's designed to pin modules via git commits, all commits to master should be stable and properly tested, vetted and linted.
@@ -201,6 +202,11 @@ This module provides the PathOrContent flag type which defines two flags to fetc
 // PathOrContent is a flag type that defines two flags to fetch bytes. Either from file (*-file flag) or content (* flag).
 // Also returns content of YAML file with substituted environment variables.
 // Follows K8s convention, i.e $(...), as mentioned here https://kubernetes.io/docs/tasks/inject-data-application/define-interdependent-environment-variables/.
+
+// PathContentReloader is a helper that runs a given function every time a PathOrContent is changed.
+// It is specially useful when paired with RegisterPathOrContent to reload configuration dynamically.
+// It works based on a file-system watcher and has a debounce mechanism to avoid excessive reloads.
+// You are still responsible to decide what to do with the new file inside the reload function.
 
 // RegisterPathOrContent registers PathOrContent flag in kingpinCmdClause.
 
