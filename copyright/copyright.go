@@ -5,16 +5,16 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/alecthomas/kingpin/v2"
 	"github.com/efficientgo/tools/core/pkg/errcapture"
-	"github.com/pkg/errors"
-	"github.com/protoconfig/protoconfig/go/kingpinv2"
-	"gopkg.in/alecthomas/kingpin.v2"
+	"github.com/openproto/protoconfig/go/kingpinv2"
 )
 
 type langSpec struct {
@@ -70,10 +70,10 @@ func (c *copyrightApplier) EnableVerbose() {
 }
 
 // TODO(bwplotka): Make this concurrently.
-func (c *copyrightApplier) Apply(file string) (err error) {
+func (c *copyrightApplier) Apply(file string) error {
 	spec, ok := specByExt[filepath.Ext(file)]
 	if !ok {
-		return errors.Errorf("unsupported file extension %v", filepath.Ext(file))
+		return fmt.Errorf("unsupported file extension %v", filepath.Ext(file))
 	}
 
 	if spec.isGenererated != nil {
@@ -110,12 +110,12 @@ func (c *copyrightApplier) Apply(file string) (err error) {
 	if err != nil {
 		return err
 	}
-	defer errcapture.Close(&err, f.Close, "close")
+	defer errcapture.Do(&err, f.Close, "close")
 
 	hdr := make([]byte, len(cb))
 	n, err := f.Read(hdr)
 	if err != io.EOF && err != nil {
-		return errors.Wrapf(err, "read first %v bytes", len(cb))
+		return fmt.Errorf("read first %v bytes error: %w", len(cb), err)
 	}
 
 	if !bytes.Equal(hdr, cb) {
@@ -136,17 +136,17 @@ func (c *copyrightApplier) Apply(file string) (err error) {
 		if n >= len(cb) {
 			// Read rest of file to the buffer.
 			if _, err := io.Copy(&c.fileBuff, f); err != nil {
-				return errors.Wrap(err, "read")
+				return fmt.Errorf("read error: %w", err)
 			}
 		}
 
 		// TODO(bwplotka): Not atomic and safest ever, do it better (tmp file?)
 		if _, err = f.Seek(0, 0); err != nil {
-			return errors.Wrap(err, "seek")
+			return fmt.Errorf("seek error: %w", err)
 		}
 
 		if _, err = c.fileBuff.WriteTo(f); err != nil {
-			return errors.Wrap(err, "write")
+			return fmt.Errorf("write error: %w", err)
 		}
 	}
 	return nil
