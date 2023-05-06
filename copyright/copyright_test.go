@@ -4,13 +4,13 @@
 package main
 
 import (
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/efficientgo/tools/core/pkg/testutil"
-	"github.com/pkg/errors"
 )
 
 func TestCopyrightApplier(t *testing.T) {

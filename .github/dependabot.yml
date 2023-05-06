@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/copyright"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "gomod"
+    directory: "/core"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "gomod"
+    directory: "/extkingpin"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "gomod"
+    directory: "/preformance"
+    schedule:
+      interval: "monthly"
+

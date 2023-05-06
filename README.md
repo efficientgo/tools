@@ -5,6 +5,7 @@
 Set of lightweight tools, packages and modules that every open-source Go project always needs with almost no dependencies.
 
 ## NOTE: core module from this repository is now deprecated and move to standalone repo with higher compatibiltiy guarantees: https://github.com/efficientgo/core
+
 ## Release model
 
 Since this is meant to be critical, tiny import, multi module toolset, there are currently no semver releases planned. It's designed to pin modules via git commits, all commits to master should be stable and properly tested, vetted and linted.
